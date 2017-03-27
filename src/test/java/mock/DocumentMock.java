@@ -8,16 +8,16 @@ import undo.Document;
 public class DocumentMock implements Document {
     @Override
     public void delete(int pos, String s) {
-        System.out.print("Deleted Position " + pos);
+        return;
     }
 
     @Override
     public void insert(int pos, String s) {
-        System.out.print("Inserted Position " + pos);
+        return;
     }
 
     @Override
     public void setDot(int pos) {
-        System.out.print("Set Cursor Position " + pos);
+        return;
     }
 }
