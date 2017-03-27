@@ -12,8 +12,6 @@ import java.util.Stack;
 /**
  * Created by aly on 27.03.17.
  */
-
-
 public class UndoManagerImpl implements UndoManager {
     private Stack<Change> undoStack = new Stack<>();
     private Stack<Change> redoStack = new Stack<>();
@@ -40,7 +38,6 @@ public class UndoManagerImpl implements UndoManager {
         }
 
         undoStack.push(change);
-
     }
 
     @Override
@@ -58,7 +55,6 @@ public class UndoManagerImpl implements UndoManager {
         Change change = undoStack.pop();
         redoStack.push(change);
         change.revert(doc);
-
     }
 
     @Override
@@ -76,5 +72,5 @@ public class UndoManagerImpl implements UndoManager {
         Change change = redoStack.pop();
         change.apply(doc);
     }
-
 }
+

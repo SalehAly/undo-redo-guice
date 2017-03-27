@@ -17,7 +17,6 @@ public class ChangeMock implements Change {
     public ChangeMock() {
         Random r = new Random();
         int i = r.nextInt(2);
-
         switch (i) {
             case 0: type = TYPE_DELETE; break;
             case 1: type = TYPE_INSERT; break;

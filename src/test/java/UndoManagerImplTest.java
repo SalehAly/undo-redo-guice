@@ -33,9 +33,7 @@ public class UndoManagerImplTest {
                         .build(UndoManagerFactory.class));
             }
         });
-
         factory = injector.getInstance(UndoManagerFactory.class);
-
     }
 
     @Test
@@ -93,7 +91,6 @@ public class UndoManagerImplTest {
         for (int i = 0; i < bufferSize; i++) {
             undoManager.undo();
         }
-
     }
 
     @Test
