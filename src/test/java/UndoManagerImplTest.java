@@ -6,10 +6,7 @@ import mock.ChangeMock;
 import mock.DocumentMock;
 import org.junit.Before;
 import org.junit.Test;
-import undo.Change;
-import undo.Document;
-import undo.UndoManager;
-import undo.UndoManagerFactory;
+import undo.*;
 import undo.impl.UndoManagerImpl;
 
 import static junit.framework.TestCase.assertFalse;
@@ -19,7 +16,8 @@ import static junit.framework.TestCase.assertTrue;
  * Created by aly on 27.03.17.
  */
 public class UndoManagerImplTest {
-    private UndoManagerFactory factory;
+    private UndoManagerFactory undoManagerFactory;
+    private ChangeFactory changeFactory;
     private int bufferSize = 100;
     private Document doc = new DocumentMock();
 
@@ -31,16 +29,22 @@ public class UndoManagerImplTest {
                 install(new FactoryModuleBuilder()
                         .implement(UndoManager.class, UndoManagerImpl.class)
                         .build(UndoManagerFactory.class));
+
+                install(new FactoryModuleBuilder()
+                        .implement(Change.class, ChangeMock.class)
+                        .build(ChangeFactory.class));
+
             }
         });
-        factory = injector.getInstance(UndoManagerFactory.class);
+        undoManagerFactory = injector.getInstance(UndoManagerFactory.class);
+        changeFactory = injector.getInstance(ChangeFactory.class);
     }
 
     @Test
     public void canUndoTest() {
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
         assertFalse(undoManager.canUndo());
-        Change change = new ChangeMock();
+        Change change = changeFactory.createDeletion(1,"",1,1);
         undoManager.registerChange(change);
         assertTrue(undoManager.canUndo());
         undoManager.undo();
@@ -49,9 +53,9 @@ public class UndoManagerImplTest {
 
     @Test
     public void canRedoTest() {
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
         assertFalse(undoManager.canRedo());
-        Change change = new ChangeMock();
+        Change change = changeFactory.createInsertion(1,"",1,1);
         undoManager.registerChange(change);
         undoManager.undo();
         assertTrue(undoManager.canRedo());
@@ -61,14 +65,14 @@ public class UndoManagerImplTest {
 
     @Test(expected = IllegalStateException.class)
     public void noUndoTest() {
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
         // Should throw exception
         undoManager.undo();
     }
 
     @Test(expected = IllegalStateException.class)
     public void noRedoTest() {
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
         // Should throw exception
         undoManager.redo();
     }
@@ -76,7 +80,7 @@ public class UndoManagerImplTest {
     @Test
     public void undoTest() {
         int bufferSize = 5;
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
 
         for (int i = 0; i < bufferSize; i++) {
             Change change = new ChangeMock(i);
@@ -96,7 +100,7 @@ public class UndoManagerImplTest {
     @Test
     public void redoTest() {
         int bufferSize = 5;
-        UndoManager undoManager = factory.createUndoManager(doc, bufferSize);
+        UndoManager undoManager = undoManagerFactory.createUndoManager(doc, bufferSize);
 
         for (int i = 0; i < bufferSize; i++) {
             Change change = new ChangeMock(i);

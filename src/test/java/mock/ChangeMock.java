@@ -1,5 +1,8 @@
 package mock;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import undo.Change;
 import undo.Document;
 
@@ -14,7 +17,8 @@ public class ChangeMock implements Change {
     private String type;
     private int id;
 
-    public ChangeMock() {
+    @AssistedInject
+    public ChangeMock(@Assisted("1") int pos,@Assisted String s,@Assisted("2") int oldDot,@Assisted("3") int newDot){
         Random r = new Random();
         int i = r.nextInt(2);
         switch (i) {
@@ -22,11 +26,9 @@ public class ChangeMock implements Change {
             case 1: type = TYPE_INSERT; break;
             default: throw new IllegalStateException("No option for" + i);
         }
-
     }
-
+    @AssistedInject
     public ChangeMock(int id) {
-        this();
         this.id = id;
     }
 
